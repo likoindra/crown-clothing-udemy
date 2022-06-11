@@ -5,6 +5,7 @@ import {
   signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -22,18 +23,22 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 // GOOGLE AUTH PROVIDER
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider); //using googlePopUp
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth,googleProvider); // using login redirect 
 
 // FIRESTORE DB
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {} ) => {
+  // if didnt get userAuth 
+  if(!userAuth) return;
+
   // doc take 3 arguments, db, collection: 'users' and uniq id
   // uid is taken from console info after using google auth
   // this function will called if user login with google auth to give the data from firestore
@@ -57,6 +62,7 @@ export const createUserDocumentFromAuth = async (userAuth) => {
         displayName,
         email,
         createdAt,
+        ...additionalInformation // spread the additionalInformation
       });
     } catch (error) {
       console.log("error creating error", error.message);
@@ -72,3 +78,11 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
   //return data userDocRef
 };
+
+// CREATE USER WITH EMAIL AND PASSWORD 
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  // if email and password doesn't exist dont call this method
+  if(!email || !password) return;
+
+  return await createUserWithEmailAndPassword(auth, email, password)
+}
