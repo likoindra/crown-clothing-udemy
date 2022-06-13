@@ -14,6 +14,9 @@ export default function SignUpForm() {
   const [formFields, setFormFields] = useState(defaultFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
+  // calling the function from UserContext 
+  // const { setCurrentUser } = useContext(UserContext)
+
   const resetFormFields = () => {
     // using default form fields to reset after sign up 
     setFormFields(defaultFields)
@@ -35,11 +38,15 @@ export default function SignUpForm() {
         return;
     }
     try {
-        const { user } = await createAuthUserWithEmailAndPassword(email, password)
+        const { user } = await createAuthUserWithEmailAndPassword(email, password);
+        // after user sign up it will store the data user to userContext 
+        // setCurrentUser(user)
         // check the response first 
         // console.log(user)
+
         // call the function createUserDocumentFromAuth
         await createUserDocumentFromAuth(user, { displayName });
+
         // if success 
         // call the reset form fields after success create user
         resetFormFields();

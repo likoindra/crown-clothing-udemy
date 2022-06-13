@@ -8,9 +8,14 @@ const defaultFields = {
   email: "",
   password: "",
 };
+
+
 export default function SignInForm() {
   const [formFields, setFormFields] = useState(defaultFields);
   const { email, password } = formFields;
+
+// callout the userContext
+    // const { setCurrentUser } = useContext(UserContext)
 
   const resetFormFields = () => {
     // using default form fields to reset after sign up 
@@ -18,9 +23,12 @@ export default function SignInForm() {
   }
 
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
-    // called to check the preferebces user object after login
+    await signInWithGooglePopup();
+    
+    // setCurrentUser(user);
+    // createUserDocumentFromAuth(user); // this function goes to userContext
+
+    // called to check the preferences user object after login
     // const userDocRef = await createUserDocumentFromAuth(user);
   };
 
@@ -35,8 +43,14 @@ export default function SignInForm() {
   const handleSubmit = async (event) => {
     event.preventDefault(); 
     try {
-        const response = await signInAuthUserWithEmailAndPassword(email,password);
-        console.log(response, 'cek res')
+        const { user } = await signInAuthUserWithEmailAndPassword(email,password);
+
+        // call the setCurrentUser for udpate the data using useContext.Provider 
+        //  it means take the value of setCurrentUser
+        // it will send the value to Navigation page 
+        // setCurrentUser(user);
+
+        // console.log(user, 'cek res')
         resetFormFields();
     } catch (error) {
         switch(error.code) {
