@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Authentication from "./routes/authentication";
+import Checkout from "./routes/checkout";
 import Home from "./routes/home";
 import Navigation from "./routes/navigation";
 import ShopComponent from "./routes/shops";
@@ -11,7 +12,8 @@ const App = () => {
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />} />
         <Route path="shop" element={<ShopComponent />} />
-        <Route path="auth" element={<Authentication/>} />
+        <Route path="auth" element={<Authentication />} />
+        <Route path="checkout" element={<Checkout />} />
       </Route>
     </Routes>
   );

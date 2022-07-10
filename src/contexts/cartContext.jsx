@@ -35,6 +35,36 @@ const addCartItem = (cartItems, productToAdd) => {
   return [...cartItems, { ...productToAdd, quantity :  + 1}]
 };
 
+// REMOVE CART ITEM 
+// disini butuh 2 parameter pada function ini, cartItems dan cartItemToRemove 
+
+const removeCartItem = (cartItems,cartItemToRemove) => {
+  // step 1 : mencari item/product yang akan di remove 
+  const existingCartItem = cartItems.find((cartItem) => 
+  // jika id cartItems dan cartItemToRemove sama 
+  cartItem.id === cartItemToRemove.id
+  );
+
+  // step 2 : jika jumlahnya sama dengan 1 , remove item pada cart 
+  if(existingCartItem.quantity === 1) {
+    return cartItems.filter(cartItem => cartItem.id !== cartItemToRemove.id);
+  }
+
+  // step 3 : jika tidak  ( jumlahnya tidak sama dengan 1 ), 
+  // return item/product dengan jumlah yang sudah dikurangi 
+  return cartItems.map((cartItem) => cartItem.id === cartItemToRemove.id ? 
+  // spread cartItem karena jika ada product yang sama akan selalu menampilkan product tersebut 
+  // jika kondisi true maka akan mengurangi quantity - 1 
+  // atau hanya akan return product yang ada dengan quantity yang sama / memunculkan quantity sebelumnya tanpa dikurangi 1
+  { ...cartItem, quantity: cartItem.quantity - 1 } : cartItem
+  )
+} 
+
+// CLEAR CART ITEM AT CHECKOUT PAGE 
+const clearCartItem = (cartItems, cartItemToClear) => {
+  return cartItems.filter(cartItem => cartItem.id !== cartItemToClear.id);
+}
+
 export const CartContext = createContext({
   isCartOpen: false,
 
@@ -45,10 +75,22 @@ export const CartContext = createContext({
   // function untuk menambah product ke dalam cart
   addItemToCart: () => {},
 
+  // function untuk remove product dalam cart 
+  removeItemFromCart: () => {},
+
+  // function untuk clear item dari cart pada page checkout 
+  clearItemFromCart: () => {},
+
   // kalkulasi quantity
   // pada default cart akan 0 
-  cartCount: 0
+  cartCount: 0,
+
+  // Total from cart item/product 
+  cartTotal: 0
 });
+
+
+
 
 // Provider dari CartContext
 export const CartProvider = ({ children }) => {
@@ -58,11 +100,22 @@ export const CartProvider = ({ children }) => {
 
   const [cartCount, setCartCount] = useState(0);
 
+  const [cartTotal, setCartTotal] = useState(0);
+
   useEffect(() => {
     // .reduce mengembalikan 2 parameter 
     // disini akan mengkalkulasi total dengan cartItem yang ada 
     const newCartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
     setCartCount(newCartCount)
+  },[cartItems]) // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
+
+
+  // USE EFFECT UNTUK MENDAPATKAN TOTAL PADA CHEKOUT PAGE
+  useEffect(() => {
+    // .reduce mengembalikan 2 parameter 
+    // disini akan mengkalkulasi total dengan cartItem yang ada dan di tambah dengan harga dari item/product yang dipilih
+    const newCartTotal = cartItems.reduce((total, cartItem) => total + cartItem.quantity * cartItem.price, 0)
+    setCartTotal(newCartTotal)
   },[cartItems]) // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
 
   // function yang akan trigger apabila user menekan tombol `add to cart` pada Product dan akan masuk dalam cart
@@ -73,8 +126,20 @@ export const CartProvider = ({ children }) => {
     setCartItems(addCartItem(cartItems, productToAdd));
   };
 
+  
+
+  // function yang akan trigger apabila user menekan tombol `decrement` pada page checkout
+  const removeItemFromCart = (cartItemToRemove) => {
+    setCartItems(removeCartItem(cartItems, cartItemToRemove));
+  };
+
+    // function yang akan trigger apabila user menekan tombol X pada checkout page
+    const clearItemFromCart = (cartItemToClear) => {
+      setCartItems(clearCartItem(cartItems, cartItemToClear));
+    };
+
   // cartCount sudah terupdate pada `newCartCount` pada useEffect()
-  const value = { isCartOpen, setIsCartOpen, addItemToCart, cartItems, cartCount };
+  const value = { isCartOpen, setIsCartOpen, addItemToCart, removeItemFromCart, clearItemFromCart, cartItems, cartCount, cartTotal };
 
   // setelah inisialisasi provider , mengisi parameter dengan `chidlren` yang akan di render pada CartProvider
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
