@@ -5,7 +5,7 @@
   letter-spacing: 0.5px;
   line-height: 50px;
   padding: 0 35px 0 35px;
-  font-size: 0.938rem;
+  font-size: 15px;
   background-color: black;
   color: white;
   text-transform: uppercase;
@@ -32,19 +32,15 @@
     }
   }
 
-  // if we inverted this class bellow will triggered
   &.inverted {
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     border: 1px solid black;
-    
 
-    // if it not 
     &:hover {
       background-color: black;
       color: white;
       border: none;
     }
   }
-
 }
