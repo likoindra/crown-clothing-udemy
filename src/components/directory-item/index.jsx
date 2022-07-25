@@ -12,7 +12,7 @@ const onNavigateHandler = () => navigate(route)
       {/* custom style for inserting image from div */}
       <BackgroundImage
         // passing the image props for using at the styling 
-        imageUrl={imageUrl}
+        imageUrl={imageUrl}     
         // style={{ backgroundImage: `url(${imageUrl})` }}
       />
       <Body>
