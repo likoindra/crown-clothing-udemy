@@ -7,7 +7,12 @@ import { UserContext } from "../../contexts/userContext";
 import { CartContext } from "../../contexts/cartContext";
 import { signOutUser } from "../../utils/firebase/firebase-utils";
 // import { useNavigate } from "react-router";
-import "./navigation.styles.scss";
+import {
+  NavigationContainer,
+  LogoContainer,
+  NavLinks,
+  NavLink,
+} from "./navigation.styles";
 
 const Navigation = () => {
   // after set the current user value from sign in using user context, then call the value it self to Navigation page
@@ -30,32 +35,23 @@ const Navigation = () => {
 
   return (
     <Fragment>
-      <div className="navigation">
-        <Link className="logo-container" to="/">
+      <NavigationContainer>
+        <LogoContainer to="/">
           <CrownLogo className="logo" />
-        </Link>
-        <div className="nav-links-container">
-          <Link className="nav-link" to="/shop">
-            SHOP
-          </Link>
-          {/* check the current user  */}
+        </LogoContainer>
+        <NavLinks>
+          <NavLink to="/shop">SHOP</NavLink>
           {currentUser ? (
-            <span className="nav-links" onClick={signOutUser}>
+            <NavLink as="span" onClick={signOutUser}>
               SIGN OUT
-            </span>
+            </NavLink>
           ) : (
-            <Link className="nav-link" to="/auth">
-              SIGN IN
-            </Link>
+            <NavLink to="/auth">SIGN IN</NavLink>
           )}
           <CartIcon />
-        </div>
-
-        {/*  memebrikan kondisi pada dropdown */}
+        </NavLinks>
         {isCartOpen && <CardDropdown />}
-
-        {/*  memebrikan kondisi pada dropdown */}
-      </div>
+      </NavigationContainer>
       <Outlet />
     </Fragment>
   );

@@ -8,9 +8,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query , getDocs } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -38,6 +38,57 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth,googleProv
 
 // FIRESTORE DB
 export const db = getFirestore();
+
+// MEMBUAT COLLECTION BARU PADA FIRESTORE 
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  // fucntion ini menerima db yaitu egtFireStore() untuk akses pada firestore dan key dari collection tsb yaitu `collectionKey`
+  const collectionRef = collection(db, collectionKey);
+
+  // menampung semua object yang akan dibuat dalam collection baru
+  // writeBatch akan mengembalikan data firestore untuk di consume pada sisi frontend 
+  const batch = writeBatch(db);
+
+  // object pada function ini adalah data yang ada pada array di dalam `shop-data.js`
+  objectsToAdd.forEach((object) => {
+    // docRef menerima 2 argumen yaitu collectionRef yang berisi `db , collectionkey` dan 'key value' pada objectToAdd
+    //  firebase akan selalu memberikan docRef meskipun tidak ada / belum di buat 
+    const docRef = doc(collectionRef , object.title.toLowerCase());
+
+    // set docRef pada firebase menggunakan method `batch` 
+    // set db docRef dengan value dari `objct` yang sudah ada dari `objectToAdd`
+    batch.set(docRef, object);
+  });
+
+  // function ini menunggu apakah `bath.set()` sudah mengirim data ke `db` atau belum
+  await batch.commit();
+  console.log('done')
+}
+
+// MENGAMBIL DATA PADA FIRESTORE 
+export const getCategoriesAndDocuments = async () => {
+  // menerima parameter 'categories' dari database yang sudah di buat sebelumnya 
+  const collectionRef = collection(db, 'categories');
+
+  // membuat query dari function collectionRef 
+  const q = query(collectionRef);
+
+  // fetch data firestore menggunakan `getDocs()` function yang berisi query dari collectionRef
+  const querySnapshot = await getDocs(q);
+  
+  //mengakses docoment yang berbeda pada db firestore 
+  // reduce data array untuk mendapatkan hasil akhirnya yaitu object di dalamnya 
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const {title , items} = docSnapshot.data();
+
+    // `acc` pada title value disamakan dengan `items` pada array
+    acc[title.toLowerCase()] = items;
+
+    // 
+    return acc; 
+  }, {});
+
+  return categoryMap;
+} 
 
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {} ) => {
   // if didnt get userAuth 

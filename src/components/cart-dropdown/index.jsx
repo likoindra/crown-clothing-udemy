@@ -1,24 +1,32 @@
-import React , { useContext }from "react";
-import "./cart-dropdown.styles.scss";
+import React, { useContext } from "react";
+import { CartDropdownContainer, EmptyMessage, CartItems } from "./cart-dropdown.styles.jsx";
 import ButtonComponent from "../button/index";
 import { CartContext } from "../../contexts/cartContext";
 import CartItem from "../cart-item";
 import { useNavigate } from "react-router";
+
 const CardDropdown = () => {
   const navigate = useNavigate();
-  const { cartItems } = useContext(CartContext)
+  const { cartItems } = useContext(CartContext);
 
   const checkoutHandler = () => {
-    navigate('/checkout')
-  }
+    navigate("/checkout");
+  };
   return (
-    <div className="cart-dropdown">
-      <div className="cart-items">
+    <CartDropdownContainer>
+      <CartItems>
         {/* map data dari database dan mengirim data pada CartItem component */}
-        { cartItems.map((item) => <CartItem cartItem={ item } key={item.id}/>) }
-      </div>
+        {cartItems.length ? (
+          cartItems.map((item) => <CartItem cartItem={item} key={item.id} />)
+        ) : (
+          <EmptyMessage>Your cart is empty</EmptyMessage>
+        )}
+        {/* // {cartItems.map((item) => (
+        //   <CartItem cartItem={item} key={item.id} />
+        // ))} */}
+      </CartItems>
       <ButtonComponent onClick={checkoutHandler}>Checkout</ButtonComponent>
-    </div>
+    </CartDropdownContainer>
   );
 };
 

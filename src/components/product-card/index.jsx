@@ -1,5 +1,5 @@
 import React,{ useContext} from "react";
-import ButtonComponent from "../button";
+import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import "./product-card.styles.scss";
 import { CartContext } from "../../contexts/cartContext";
 
@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
   // memanggil function dari CartContext yang akan di gunakan pada button 
   const { addItemToCart } = useContext(CartContext);
 
-  // function  add product ke dalam cart
+  // function add product ke dalam cart
   const addProductToCart = () => addItemToCart(product)
 
   return (
@@ -20,7 +20,7 @@ const ProductCard = ({ product }) => {
         <span className="name">{name}</span>
         <span className="price">{price}</span>
       </div>
-      <ButtonComponent buttonType="inverted" onClick={addProductToCart}>Add To Cart</ButtonComponent>
+      <ButtonComponent buttonType={BUTTON_TYPE_CLASSES.inverted} onClick={addProductToCart}>Add To Cart</ButtonComponent>
     </div> 
   );
 };

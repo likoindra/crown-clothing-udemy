@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+ import React, { useState } from "react";
 import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase-utils";
-import ButtonComponent from "../button";
+import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import FormInputComponent from "../form-input";
 import "./sign-in-form.styles.scss";
 
@@ -81,7 +81,7 @@ export default function SignInForm() {
         <FormInputComponent label="Password" type="password" required name="password" value={ password } onChange={ handleChange }/>
         <div className="buttons-container">
             <ButtonComponent type="submit">Sign In</ButtonComponent>
-            <ButtonComponent buttonType="google" type="button" onClick={signInWithGoogle}>Google Sign In</ButtonComponent>
+            <ButtonComponent buttonType={BUTTON_TYPE_CLASSES.google} type="button" onClick={signInWithGoogle}>Google Sign In</ButtonComponent>
         </div>
       </form>
     </div>
