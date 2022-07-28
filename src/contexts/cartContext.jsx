@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext,  useReducer } from "react";
+import { createAction } from "../utils/reducer/reducer.utils";
 
 // inisialisasi pada cart dropwdown : jika ada product yang sama , product akan bertambah jika tidak , akan add product baru pada cart dropdown
 const addCartItem = (cartItems, productToAdd) => {
@@ -65,6 +66,8 @@ const clearCartItem = (cartItems, cartItemToClear) => {
   return cartItems.filter(cartItem => cartItem.id !== cartItemToClear.id);
 }
 
+
+
 export const CartContext = createContext({
   isCartOpen: false,
 
@@ -89,54 +92,116 @@ export const CartContext = createContext({
   cartTotal: 0
 });
 
+// 
+const CART_ACTION_TYPES = {
+  SET_CART_ITEM : "SET_CART_ITEM",
+  SET_IS_CART_OPEN : "SET_IS_CART_OPEN",
+  SET_CART_COUNT :'SET_CART_COUNT',
+  SET_CART_TOTAL:  'SET_CART_TOTAL'
+}
 
+// make initial value that readeable 
+const INITIAL_STATE = {
+  isCartOpen : false,
+  cartItems: [],
+  cartCount: 0,
+  cartTotal: 0
+}
 
+const cartReducer = (state, action) => {
+  const { type , payload } = action;
+
+  switch(type) {
+    case CART_ACTION_TYPES.SET_CART_ITEMS : 
+    return {
+      ...state,
+      ...payload
+    }
+    case CART_ACTION_TYPES.SET_IS_CART_OPEN : 
+    return {
+      ...state,
+      isCartOpen: payload
+    }
+    default: 
+    throw new Error(`Unhandled type of ${type} in cartReducer`)
+  }
+}
 
 // Provider dari CartContext
 export const CartProvider = ({ children }) => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // const [isCartOpen, setIsCartOpen] = useState(false);
+  // const [cartItems, setCartItems] = useState([]);
+  // const [cartCount, setCartCount] = useState(0);
+  // const [cartTotal, setCartTotal] = useState(0);
 
-  const [cartItems, setCartItems] = useState([]);
-
-  const [cartCount, setCartCount] = useState(0);
-
-  const [cartTotal, setCartTotal] = useState(0);
-
-  useEffect(() => {
+  // useEffect(() => {
     // .reduce mengembalikan 2 parameter 
     // disini akan mengkalkulasi total dengan cartItem yang ada 
-    const newCartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
-    setCartCount(newCartCount)
-  },[cartItems]) // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
+    // const newCartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
+    // setCartCount(newCartCount)
+    // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
+  // },[cartItems])
 
 
   // USE EFFECT UNTUK MENDAPATKAN TOTAL PADA CHEKOUT PAGE
-  useEffect(() => {
+  // useEffect(() => {
     // .reduce mengembalikan 2 parameter 
     // disini akan mengkalkulasi total dengan cartItem yang ada dan di tambah dengan harga dari item/product yang dipilih
-    const newCartTotal = cartItems.reduce((total, cartItem) => total + cartItem.quantity * cartItem.price, 0)
-    setCartTotal(newCartTotal)
-  },[cartItems]) // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
+    // const newCartTotal = cartItems.reduce((total, cartItem) => total + cartItem.quantity * cartItem.price, 0)
+    // setCartTotal(newCartTotal)
+ // akan meng-kalkulasi kembali jika pada state cartItems ada perubahan 
+  // },[cartItems])
+
+  // megganti set state dan use effect dengan useReducer hook
+  const [{ cartItems, isCartOpen, cartTotal , cartCount}, dispatch] = useReducer(cartReducer, INITIAL_STATE);
+
+  const updateCartItemsReducer = (newCartItems) => {
+    // mendapatkan value `newItems` pada function helpers dibawah , 
+
+    // get cartCount 
+    const newCartCount = newCartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
+
+    // get cartTotal 
+    const newCartTotal = newCartItems.reduce((total, cartItem) => total + cartItem.quantity * cartItem.price, 0)
+    
+    // dispatch useReducer function 
+    dispatch(
+      // function createAction , recieve type and payload
+    createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {cartItems: newCartItems, cartTotal: newCartTotal, cartCount: newCartCount})
+    // {type: CART_ACTION_TYPES.SET_CART_ITEMS, 
+    // payload: {cartItems: newCartItems, cartTotal: newCartTotal, cartCount: newCartCount}}
+    )
+  }
 
   // function yang akan trigger apabila user menekan tombol `add to cart` pada Product dan akan masuk dalam cart
   // parameter akan berisi product yang akan di add
   const addItemToCart = (productToAdd) => {
     // di dalam ini akan meng-update array cartItems dengan product yang di tambahkan
     // memanggil function addCartItems
-    setCartItems(addCartItem(cartItems, productToAdd));
+    const newCartItems = addCartItem(cartItems, productToAdd);
+    updateCartItemsReducer(newCartItems)
   };
-
-  
 
   // function yang akan trigger apabila user menekan tombol `decrement` pada page checkout
   const removeItemFromCart = (cartItemToRemove) => {
-    setCartItems(removeCartItem(cartItems, cartItemToRemove));
+    const newCartItems = removeCartItem(cartItems, cartItemToRemove);
+    updateCartItemsReducer(newCartItems)
+
   };
 
-    // function yang akan trigger apabila user menekan tombol X pada checkout page
-    const clearItemFromCart = (cartItemToClear) => {
-      setCartItems(clearCartItem(cartItems, cartItemToClear));
-    };
+  // function yang akan trigger apabila user menekan tombol X pada checkout page
+  const clearItemFromCart = (cartItemToClear) => {
+  const newCartItems = clearCartItem(cartItems, cartItemToClear);
+  updateCartItemsReducer(newCartItems)
+  };
+
+  // this function will recieve boolean type 
+  const setIsCartOpen = (bool) => {
+    dispatch(
+    createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, bool)
+    // {type: CART_ACTION_TYPES.SET_IS_CART_OPEN, payload: bool}
+    )
+  }
 
   // cartCount sudah terupdate pada `newCartCount` pada useEffect()
   const value = { isCartOpen, setIsCartOpen, addItemToCart, removeItemFromCart, clearItemFromCart, cartItems, cartCount, cartTotal };

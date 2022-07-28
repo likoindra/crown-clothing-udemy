@@ -74,20 +74,24 @@ export const getCategoriesAndDocuments = async () => {
 
   // fetch data firestore menggunakan `getDocs()` function yang berisi query dari collectionRef
   const querySnapshot = await getDocs(q);
+
+  // re-structure categoryMap function 
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data())
+
   
   //mengakses docoment yang berbeda pada db firestore 
   // reduce data array untuk mendapatkan hasil akhirnya yaitu object di dalamnya 
-  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    const {title , items} = docSnapshot.data();
+  // const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+  //   const {title , items} = docSnapshot.data();
 
-    // `acc` pada title value disamakan dengan `items` pada array
-    acc[title.toLowerCase()] = items;
+  // `acc` pada title value disamakan dengan `items` pada array
+  //   acc[title.toLowerCase()] = items;
+  //   return acc; 
+  // }, {});
 
-    // 
-    return acc; 
-  }, {});
+  // return categoryMap;
 
-  return categoryMap;
+  
 } 
 
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {} ) => {
@@ -156,5 +160,4 @@ export const signOutUser = async () => await signOut(auth);
 // onAuthStateChanged
 // it will call as callback whenever the auth state changed
 // it will run like login logout , 
-export const onAuthStateChangedListener = async (callback) =>  
-onAuthStateChanged(auth, callback);
+export const onAuthStateChangedListener = async (callback) =>  onAuthStateChanged(auth, callback);

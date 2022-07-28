@@ -4,7 +4,6 @@ import { getCategoriesAndDocuments } from "../utils/firebase/firebase-utils";
 // import PRODUCTS from '../shop-data.json';
 // import SHOP_DATA from '../shop-data.js';
 
-
 export const CategoriesContext = createContext({
     // value products akan di tampung pada arran
     categoriesMap : {},
@@ -34,7 +33,7 @@ export const CategoriesProvider = ({ children }) => {
     useEffect(() => {
         // panggil async await di dalam useEffect 
         const getCategoriesMap = async () => {
-            const categoryMap = await getCategoriesAndDocuments() ;
+            const categoryMap = await getCategoriesAndDocuments();
             // console.log(categoryMap)
             setCategoriesMap(categoryMap)
         }

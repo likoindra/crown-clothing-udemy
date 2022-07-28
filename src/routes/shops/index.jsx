@@ -1,16 +1,31 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { getCategoriesAndDocuments } from "../../utils/firebase/firebase-utils";
 import CategoriesPreview from "../categories-preview";
 import Category from "../category";
+import { setCategories } from "../../store/categories/category.action";
+import { useDispatch } from 'react-redux';
+import "./shops.styles.scss";
+// import { CategoriesProvider } from "../../contexts/categoriesContext";
 // import ProductCard from "../../components/product-card";
 // import SHOP_DATA from '../../shop-data.json';
 // import { CategoriesContext } from "../../contexts/categoriesContext";
 // import CategoryPreview from "../../components/category-preview";
-import "./shops.styles.scss";
 // 26 Juni
 // Mengganti render SHOP_DATA menggunakan data dari ProdcutsContext dari useContext
 
 const ShopComponent = () => {
   // const { categoriesMap } = useContext(CategoriesContext);
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const getCategoriesMap = async () => {
+    const categoriesArray = await getCategoriesAndDocuments('categories');
+    console.log(categoriesArray)
+      dispatch(setCategories(categoriesArray))
+    }
+    getCategoriesMap();
+  },[dispatch]) 
+
   return (
     <Routes>
       <Route index element={<CategoriesPreview />} />

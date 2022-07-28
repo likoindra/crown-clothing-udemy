@@ -1,37 +1,44 @@
-import React, { useContext } from "react";
-import "./checkout.styles.scss";
-import { CartContext } from "../../contexts/cartContext";
+import React from "react";
+import "./checkout.styles.jsx";
+// import { CartContext } from "../../contexts/cartContext";
+import { useSelector } from 'react-redux';
 import CheckoutItem from "../../components/checkout-item";
+import { selectCartItems, selectCartTotal } from "../../store/cart/cart.selector.js";
+import { CheckoutContainer, CheckoutHeader, HeaderBlock, Total } from "./checkout.styles.jsx";
 
 const Checkout = () => {
   // memanggil value dari cartContext
   //   function `addItemToCart` pada cartContext akan digunakan untuk menambah item pada page checkout
   // eslint-disable-next-line no-unused-vars
-  const { cartItems, cartTotal, addItemToCart, removeItemFromCart } = useContext(CartContext);
+  // const { cartItems, cartTotal, addItemToCart, removeItemFromCart } = useContext(CartContext);
+
+  const cartItems = useSelector(selectCartItems);
+  const cartTotal = useSelector(selectCartTotal);
+
   return (
-    <div className="checkout-container">
-      <div className="checkout-header">
-        <div className="header-block">
+    <CheckoutContainer>
+      <CheckoutHeader>
+        <HeaderBlock>
           <span>Product</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Description</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Quantity</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Price</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Remove</span>
-        </div>
-      </div>
+        </HeaderBlock>
+      </CheckoutHeader>
       {cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
       ))}
-      <span className="total">Total: {cartTotal}</span>
-    </div>
+      <Total>Total: ${cartTotal}</Total>
+    </CheckoutContainer>
   );
 };
 

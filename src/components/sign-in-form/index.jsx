@@ -1,4 +1,5 @@
  import React, { useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase-utils";
 import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import FormInputComponent from "../form-input";
@@ -45,7 +46,7 @@ export default function SignInForm() {
     try {
         const { user } = await signInAuthUserWithEmailAndPassword(email,password);
 
-        // call the setCurrentUser for udpate the data using useContext.Provider 
+        // call the setCurrentUser for udpate the data using userContext.Provider 
         //  it means take the value of setCurrentUser
         // it will send the value to Navigation page 
         // setCurrentUser(user);

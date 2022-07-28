@@ -1,18 +1,23 @@
-import React,{ useContext} from "react";
+import React from "react";
 import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import "./product-card.styles.scss";
-import { CartContext } from "../../contexts/cartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart } from "../../store/cart/cart.action";
+import { selectCartItems } from "../../store/cart/cart.selector";
+// import { CartContext } from "../../contexts/cartContext";
 
 const ProductCard = ({ product }) => {
-  // destructur key dari product, pilih mana yang di butuhkan untuk ditampilkan pada component ini
+  const dispatch = useDispatch();
+  // de-structure key dari product, pilih mana yang di butuhkan untuk ditampilkan pada component ini
   const { name, price, imageUrl } = product;
+ 
+  const cartItems = useSelector(selectCartItems)
 
   // memanggil function dari CartContext yang akan di gunakan pada button 
-  const { addItemToCart } = useContext(CartContext);
+  // const { addItemToCart } = useContext(CartContext); 
+  const addProductToCart = () => dispatch(addItemToCart(cartItems, product))
 
-  // function add product ke dalam cart
-  const addProductToCart = () => addItemToCart(product)
-
+  // console.log(cartItems, 'product card')
   return (
     <div className="product-card-container">
       <img src={imageUrl} alt={`${name}`} />

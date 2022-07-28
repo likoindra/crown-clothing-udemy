@@ -1,12 +1,15 @@
-import { Fragment, useContext } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Fragment } from "react";
+import { Outlet } from "react-router-dom";
 import CartIcon from "../../components/cart-icon";
 import CardDropdown from "../../components/cart-dropdown";
 import { ReactComponent as CrownLogo } from "../../assets/svg/crown.svg";
-import { UserContext } from "../../contexts/userContext";
-import { CartContext } from "../../contexts/cartContext";
 import { signOutUser } from "../../utils/firebase/firebase-utils";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
+import { selectIsCartOpen } from "../../store/cart/cart.selector";
 // import { useNavigate } from "react-router";
+// import { UserContext } from "../../contexts/userContext";
+// import { CartContext } from "../../contexts/cartContext";
 import {
   NavigationContainer,
   LogoContainer,
@@ -15,14 +18,19 @@ import {
 } from "./navigation.styles";
 
 const Navigation = () => {
+  const currentUser = useSelector(selectCurrentUser)
+
+  const isCartOpen = useSelector(selectIsCartOpen)
+
+  // console.log(currentUser, 'cek')
   // after set the current user value from sign in using user context, then call the value it self to Navigation page
-  const { currentUser } = useContext(UserContext);
-
+  // const { currentUser } = useContext(UserContext);
+  // console.log(currentUser, 'cek')
   // memanggil value dari CartProvider pada Context
-  const { isCartOpen } = useContext(CartContext);
-
+  // const { isCartOpen } = useContext(CartContext);
   // console.log(currentUser, 'cek current user')
-  // const navigate = useNavigate()
+
+  // const navigate = useNavigate() 
   // const signOutHandler = async () => {
   //   await signOutUser();
   //   setCurrentUser(null);
