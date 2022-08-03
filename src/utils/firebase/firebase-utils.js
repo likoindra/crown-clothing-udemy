@@ -69,6 +69,9 @@ export const getCategoriesAndDocuments = async () => {
   // menerima parameter 'categories' dari database yang sudah di buat sebelumnya 
   const collectionRef = collection(db, 'categories');
 
+  // check jika terjadi error pada get categories 
+  // await Promise.reject(new Error('new error detected'))
+
   // membuat query dari function collectionRef 
   const q = query(collectionRef);
 

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { getCategoriesAndDocuments } from "../../utils/firebase/firebase-utils";
+// import { getCategoriesAndDocuments } from "../../utils/firebase/firebase-utils";
 import CategoriesPreview from "../categories-preview";
 import Category from "../category";
-import { setCategories } from "../../store/categories/category.action";
+// eslint-disable-next-line no-unused-vars
+import { fetchCategoriesAsync, setCategories } from "../../store/categories/category.action";
 import { useDispatch } from 'react-redux';
 import "./shops.styles.scss";
 // import { CategoriesProvider } from "../../contexts/categoriesContext";
@@ -18,12 +19,13 @@ const ShopComponent = () => {
   // const { categoriesMap } = useContext(CategoriesContext);
   const dispatch = useDispatch()
   useEffect(() => {
-    const getCategoriesMap = async () => {
-    const categoriesArray = await getCategoriesAndDocuments('categories');
-    console.log(categoriesArray)
-      dispatch(setCategories(categoriesArray))
-    }
-    getCategoriesMap();
+    dispatch(fetchCategoriesAsync())
+    // const getCategoriesMap = async () => {
+    // const categoriesArray = await getCategoriesAndDocuments('categories');
+    // console.log(categoriesArray)
+    //   dispatch(setCategories(categoriesArray))
+    // }
+    // getCategoriesMap();
   },[dispatch]) 
 
   return (
