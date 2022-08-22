@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase-utils";
+import { useDispatch } from "react-redux";
+import { signUpStart } from "../../store/user/user.action";
+// import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase-utils";
 import ButtonComponent from "../button";
 import FormInputComponent from "../form-input";
-import "./sign-up-form.styles.scss";
+import { SignUpContainer }from "./sign-up-form.styles.jsx";
+// import { useNavigate } from 'react-router-dom';
 
 const defaultFields = {
   displayName: "",
@@ -11,6 +14,8 @@ const defaultFields = {
   confirmPassword: "",
 };
 export default function SignUpForm() {
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
   const [formFields, setFormFields] = useState(defaultFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
@@ -38,28 +43,31 @@ export default function SignUpForm() {
         return;
     }
     try {
-        const { user } = await createAuthUserWithEmailAndPassword(email, password);
+        //  dispatch function signUpStart from user.action
+        dispatch(signUpStart(email, password, displayName ))
+        // const { user } = await createAuthUserWithEmailAndPassword(email, password);
         // after user sign up it will store the data user to userContext 
         // setCurrentUser(user)
         // check the response first 
         // console.log(user)
 
         // call the function createUserDocumentFromAuth
-        await createUserDocumentFromAuth(user, { displayName });
+        // await createUserDocumentFromAuth(user, { displayName });
 
         // if success 
         // call the reset form fields after success create user
         resetFormFields();
+        // navigate('/')
     } catch (error) {
         if(error.code === 'auth/email-already-in-use') {
             alert('Cannot create user email already in use ')
         } else {
-            console.log('user created encountered an error', error);
+          console.log('user created encountered an error', error);
         }
     }
   }
   return (
-    <div className="sign-up-container">
+    <SignUpContainer>
       <h2>Don't have an account ? </h2>
       <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
@@ -69,6 +77,6 @@ export default function SignUpForm() {
         <FormInputComponent label="Confirm Password" type="password" required name="confirmPassword" value={ confirmPassword } onChange={ handleChange }/> 
         <ButtonComponent type="submit">Sign Up</ButtonComponent>
       </form>
-    </div>
+    </SignUpContainer>
   );
 }

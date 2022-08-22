@@ -1,9 +1,12 @@
  import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
-import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase-utils";
+// import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase-utils";
 import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import FormInputComponent from "../form-input";
-import "./sign-in-form.styles.scss";
+import {SignInContainer , ButtonContainer} from "./sign-in-form.styles.jsx";
+import { useDispatch } from 'react-redux';
+import { googleSignInStart,emailSignInStart } from "../../store/user/user.action";
+import { useNavigate } from "react-router";
 
 const defaultFields = {
   email: "",
@@ -12,6 +15,8 @@ const defaultFields = {
 
 
 export default function SignInForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formFields, setFormFields] = useState(defaultFields);
   const { email, password } = formFields;
 
@@ -24,7 +29,9 @@ export default function SignInForm() {
   }
 
   const signInWithGoogle = async () => {
-    await signInWithGooglePopup();
+    dispatch(googleSignInStart());
+
+    // await signInWithGooglePopup();
     
     // setCurrentUser(user);
     // createUserDocumentFromAuth(user); // this function goes to userContext
@@ -44,8 +51,8 @@ export default function SignInForm() {
   const handleSubmit = async (event) => {
     event.preventDefault(); 
     try {
-        const { user } = await signInAuthUserWithEmailAndPassword(email,password);
-
+         dispatch(emailSignInStart(email, password))
+        // await signInAuthUserWithEmailAndPassword(email,password);
         // call the setCurrentUser for udpate the data using userContext.Provider 
         //  it means take the value of setCurrentUser
         // it will send the value to Navigation page 
@@ -53,6 +60,7 @@ export default function SignInForm() {
 
         // console.log(user, 'cek res')
         resetFormFields();
+        navigate('/');
     } catch (error) {
         switch(error.code) {
         case 'auth/wrong-password':
@@ -74,17 +82,17 @@ export default function SignInForm() {
     }
   }
   return (
-    <div className="sign-up-container">
+    <SignInContainer>
       <h2>Already have an account ? </h2>
       <span>Sign in with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInputComponent label="Email" type="email" required name="email" value={ email } onChange={ handleChange }/>
         <FormInputComponent label="Password" type="password" required name="password" value={ password } onChange={ handleChange }/>
-        <div className="buttons-container">
+        <ButtonContainer>
             <ButtonComponent type="submit">Sign In</ButtonComponent>
             <ButtonComponent buttonType={BUTTON_TYPE_CLASSES.google} type="button" onClick={signInWithGoogle}>Google Sign In</ButtonComponent>
-        </div>
+        </ButtonContainer>
       </form>
-    </div>
+    </SignInContainer>
   );
 }

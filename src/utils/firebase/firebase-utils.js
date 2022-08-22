@@ -69,6 +69,9 @@ export const getCategoriesAndDocuments = async () => {
   // menerima parameter 'categories' dari database yang sudah di buat sebelumnya 
   const collectionRef = collection(db, 'categories');
 
+  // check jika terjadi error pada get categories 
+  // await Promise.reject(new Error('new error detected'))
+
   // membuat query dari function collectionRef 
   const q = query(collectionRef);
 
@@ -103,14 +106,14 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   // this function will called if user login with google auth to give the data from firestore
   const userDocRef = doc(db, "users", userAuth.uid);
 
-  console.log(userDocRef);
+  // console.log(userDocRef);
 
   // specific object data
   // getting data from firestore from `doc`
   // can also allow to access the data from firestore database
   const userSnapshot = await getDoc(userDocRef);
-  console.log(userSnapshot);
-  console.log(userSnapshot.exists());
+  // console.log(userSnapshot);
+  // console.log(userSnapshot.exists());
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
@@ -126,16 +129,9 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     } catch (error) {
       console.log("error creating error", error.message);
     }
-
-    return userDocRef;
   }
-
-  //if user data exists
-  // create/ set the document with the data from userAuth in collection
-
-  // if user data not exists
-
-  //return data userDocRef
+  // return userSnapshot , because the data after creating document or user will stay in userSnapshot 
+  return userSnapshot;
 };
 
 // CREATE USER WITH EMAIL AND PASSWORD 
@@ -146,7 +142,7 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
   return await createUserWithEmailAndPassword(auth, email, password)
 }
 
-// SIGN IN WITH EMAIL AND PASSOWORD
+// SIGN IN WITH EMAIL AND PASSWORD
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   // if email and password doesn't exist dont call this method
   if(!email || !password) return;
@@ -161,3 +157,21 @@ export const signOutUser = async () => await signOut(auth);
 // it will call as callback whenever the auth state changed
 // it will run like login logout , 
 export const onAuthStateChangedListener = async (callback) =>  onAuthStateChanged(auth, callback);
+
+
+// check the active user that authenticated 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      // onAuthStateChanged take `auth` object and callback 
+      auth,
+      (userAuth) => {
+        unsubscribe();
+        // if the flow success or resolve 
+        resolve(userAuth); 
+      },
+      // if rejected or error
+      reject
+    )
+  })
+}

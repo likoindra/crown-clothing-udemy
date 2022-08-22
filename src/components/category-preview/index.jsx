@@ -1,16 +1,17 @@
 import React from "react";
-import "./category-preview.styles.scss";
+import "./category-preview.styles.jsx";
 import ProductCard from "../product-card";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Preview, Title , CategoryPreviewContainer} from "./category-preview.styles.jsx";
 
 const CategoryPreview = ({ title, products }) => {
   return (
-    <div className="category-preview-container">
+    <CategoryPreviewContainer>
       <h2>
         {/* make only the text for clickable */}
-        <Link className="title" to={title}>{title.toUpperCase()}</Link>
+        <Title to={title}>{title.toUpperCase()}</Title>
       </h2>
-      <div className="preview">
+      <Preview>
         {
           // keep the idx not greater than 4
           products
@@ -19,8 +20,8 @@ const CategoryPreview = ({ title, products }) => {
               <ProductCard key={product.id} product={product} />
             ))
         }
-      </div>
-    </div>
+      </Preview>
+    </CategoryPreviewContainer>
   );
 };
 
