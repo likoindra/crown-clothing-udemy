@@ -3,7 +3,7 @@ import "./checkout.styles.jsx";
 // import { CartContext } from "../../contexts/cartContext";
 import { useSelector } from 'react-redux';
 import CheckoutItem from "../../components/checkout-item";
-import { selectCartItems, selectCartTotal } from "../../store/cart/cart.selector.js";
+import { selectCartItems, selectCartTotal } from "../../store/cart/cart.selector";
 import { CheckoutContainer, CheckoutHeader, HeaderBlock, Total } from "./checkout.styles.jsx";
 import PaymentForm from "../../components/payment-form/index.jsx";
 

@@ -1,8 +1,9 @@
-import { createAction } from "../../utils/reducer/reducer.utils";
-import { CART_ACTION_TYPES } from "./cart.types";
+import { ActionWithPayload, Action , createAction, withMatcher } from "../../utils/reducer/reducer.utils";
+import { CATEGORIES_ACTION_TYPES, CategoryItem } from "../categories/category.types";
+import { CART_ACTION_TYPES, CartItem } from "./cart.types";
 
 
-const addCartItem = (cartItems, productToAdd) => {
+const addCartItem = (cartItems: CartItem[], productToAdd: CategoryItem): CartItem[] => {
   // mencari apakah cartItems berisi product
   // cek terlebih dahulu item yang ada pada cart, lalu cocokan id cartItems dan productToAdd
   // const productInCart = cartItems.find((cartItem) => cartItems.id === productToAdd.id)
@@ -42,7 +43,7 @@ const addCartItem = (cartItems, productToAdd) => {
 // REMOVE CART ITEM
 // disini butuh 2 parameter pada function ini, cartItems dan cartItemToRemove
 
-const removeCartItem = (cartItems, cartItemToRemove) => {
+const removeCartItem = (cartItems: CartItem[], cartItemToRemove: CartItem): CartItem[] => {
   // step 1 : mencari item/product yang akan di remove
   const existingCartItem = cartItems.find(
     (cartItem) =>
@@ -51,7 +52,8 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
   );
 
   // step 2 : jika jumlahnya sama dengan 1 , remove item pada cart
-  if (existingCartItem.quantity === 1) {
+  // note : membuat kondisi jika `existingCartItem` true , akan mengecek quantity jika false , tidak akan memproses code setelah nya 
+  if (existingCartItem && existingCartItem.quantity === 1) {
     return cartItems.filter((cartItem) => cartItem.id !== cartItemToRemove.id);
   }
 
@@ -68,27 +70,35 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
 };
 
 // CLEAR CART ITEM AT CHECKOUT PAGE
-const clearCartItem = (cartItems, cartItemToClear) => cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
+const clearCartItem = (cartItems: CartItem[], cartItemToClear: CartItem): CartItem[] => cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
+// Define action to each type 
+export type SetIsCartOpen = ActionWithPayload<CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean>;
+
+export type SetCartItems = ActionWithPayload<CART_ACTION_TYPES.SET_CART_ITEMS, CartItem[]>;
 
 // ACTION CREATOR FROM USING USECONTEXT TO REDUX
+export const setIsCartOpen = withMatcher((boolean: boolean): SetIsCartOpen => createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean));
 
-export const setIsCartOpen = (boolean) => createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean);
+export const setCartItems = withMatcher((cartItems: CartItem[]): SetCartItems => createAction(CART_ACTION_TYPES.SET_CART_ITEMS, cartItems));
 
-export const addItemToCart = (cartItems, productToAdd) => {
+export const addItemToCart = (cartItems: CartItem[], productToAdd: CategoryItem) => {
   // di dalam ini akan meng-update array cartItems dengan product yang di tambahkan
   const newCartItems = addCartItem(cartItems, productToAdd);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
+  return setCartItems(newCartItems);
+  // return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };
 
 // function yang akan trigger apabila user menekan tombol `decrement` pada page checkout
-export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+export const removeItemFromCart = (cartItems: CartItem[], cartItemToRemove: CartItem) => {
   const newCartItems = removeCartItem(cartItems, cartItemToRemove);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
+  return setCartItems(newCartItems);
+  // return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };
 
 // function yang akan trigger apabila user menekan tombol X pada checkout page
-export const clearItemFromCart = (cartItems, cartItemToClear) => {
+export const clearItemFromCart = (cartItems: CartItem[], cartItemToClear: CartItem) => {
   const newCartItems = clearCartItem(cartItems, cartItemToClear);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
+  return setCartItems(newCartItems);
+  // return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };

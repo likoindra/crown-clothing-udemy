@@ -24,6 +24,8 @@ const PaymentForm = () => {
   // take the current user
   const currentUser = useSelector(selectCurrentUser);
 
+  console.log(currentUser, 'current user')
+
   // payment handler submit function
   // make it async await because need to recieve data from stripe
   const paymentHandler = async (e) => {
@@ -64,7 +66,7 @@ const PaymentForm = () => {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: currentUser ? currentUser.DisplayName : "Guest",
+          name: currentUser ? currentUser?.displayName : "Guest",
         },
       },
     });
@@ -75,6 +77,7 @@ const PaymentForm = () => {
     } else {
       if (paymentResult.paymentIntent.status === "succeeded") {
         alert("Payment Successful");
+        setIsProcessingPayment(false);
       }
     }
   };
@@ -85,7 +88,6 @@ const PaymentForm = () => {
         <CardElement />
         {/* disabling button when processing payment is true */}
         <PaymentButton
-          
           isLoading={isProcessingPayment}
           buttonType={BUTTON_TYPE_CLASSES.inverted}
         >

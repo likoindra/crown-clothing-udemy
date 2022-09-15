@@ -1,9 +1,10 @@
 import { createSelector } from "reselect";
-
+import { CategoriesState } from "./category.reducer";
+import { CategoryMap } from "./category.types";
+import { RootState } from "../store";
 
 // data awal yang di dapatkan pada saat fetch dari state.categories
-const selectCategoriesReducer = (state) => state.categories
-// console.log("selector 1 fred"); 
+const selectCategoriesReducer = (state: RootState): CategoriesState => state.categories;
 
 // create memoize selector
 // createSelector function takes 2 arguments
@@ -18,14 +19,12 @@ export const selectCategories = createSelector(
 
 export const selectCategoriesMap = createSelector(
   [selectCategories],
-  (categories) => {
-    // console.log("selector 3 fired");
-    return categories.reduce((acc, category) => {
+  (categories): CategoryMap => 
+  categories.reduce((acc, category) => {
       const { title, items } = category;
       acc[title.toLowerCase()] = items;
       return acc;
-    }, {});
-  }
+    }, {} as CategoryMap)
 );
 
 // spinner selector 

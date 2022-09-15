@@ -9,8 +9,12 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  NextOrObserver,
+  User
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query , getDocs } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query , getDocs, QueryDocumentSnapshot } from "firebase/firestore";
+
+import { Category } from "../../store/categories/category.types";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -39,8 +43,13 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth,googleProv
 // FIRESTORE DB
 export const db = getFirestore();
 
+// ObjectToAdd type 
+export type ObjectToAdd = {
+  title : string;
+}
+
 // MEMBUAT COLLECTION BARU PADA FIRESTORE 
-export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+export const addCollectionAndDocuments = async <T extends ObjectToAdd> (collectionKey: string, objectsToAdd: T[]): Promise<void> => {
   // fucntion ini menerima db yaitu egtFireStore() untuk akses pada firestore dan key dari collection tsb yaitu `collectionKey`
   const collectionRef = collection(db, collectionKey);
 
@@ -50,12 +59,12 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
 
   // object pada function ini adalah data yang ada pada array di dalam `shop-data.js`
   objectsToAdd.forEach((object) => {
-    // docRef menerima 2 argumen yaitu collectionRef yang berisi `db , collectionkey` dan 'key value' pada objectToAdd
+    // docRef menerima 2 argumen yaitu collectionRef yang berisi `db , collectionkey` dan 'key value' pada objectToAdd 
     //  firebase akan selalu memberikan docRef meskipun tidak ada / belum di buat 
     const docRef = doc(collectionRef , object.title.toLowerCase());
 
     // set docRef pada firebase menggunakan method `batch` 
-    // set db docRef dengan value dari `objct` yang sudah ada dari `objectToAdd`
+    // set db docRef dengan value dari `object` yang sudah ada dari `objectToAdd`
     batch.set(docRef, object);
   });
 
@@ -65,7 +74,7 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
 }
 
 // MENGAMBIL DATA PADA FIRESTORE 
-export const getCategoriesAndDocuments = async () => {
+export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   // menerima parameter 'categories' dari database yang sudah di buat sebelumnya 
   const collectionRef = collection(db, 'categories');
 
@@ -79,7 +88,9 @@ export const getCategoriesAndDocuments = async () => {
   const querySnapshot = await getDocs(q);
 
   // re-structure categoryMap function 
-  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data())
+  // cast the value `docSnapshot.data() as Category`
+  // dosSnapshot.data() will return back the same as `Category`
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data() as Category)
 
   
   //mengakses docoment yang berbeda pada db firestore 
@@ -93,11 +104,24 @@ export const getCategoriesAndDocuments = async () => {
   // }, {});
 
   // return categoryMap;
-
-  
 } 
 
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {} ) => {
+// AdditionalInformation type 
+export type AdditionalInformation = {
+  displayName?: string;
+};
+
+// UserData type 
+export type UserData = {
+  createdAt: Date;
+  displayName: string;
+  email: string
+};
+
+export const createUserDocumentFromAuth = async (userAuth: User, additionalInformation = {} as AdditionalInformation): Promise<void | QueryDocumentSnapshot<UserData>> => {
+  // returning Prmoise <void>, cause the userAuth can be exist or not 
+  // Promise <QueryDocumentsSnapshot> : will hold the value inside the snapshot <UserData>
+
   // if didnt get userAuth 
   if(!userAuth) return;
 
@@ -127,15 +151,15 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
         ...additionalInformation // spread the additionalInformation
       });
     } catch (error) {
-      console.log("error creating error", error.message);
+      console.log("error creating error", error);
     }
   }
   // return userSnapshot , because the data after creating document or user will stay in userSnapshot 
-  return userSnapshot;
+  return userSnapshot as QueryDocumentSnapshot<UserData>;
 };
 
 // CREATE USER WITH EMAIL AND PASSWORD 
-export const createAuthUserWithEmailAndPassword = async (email, password) => {
+export const createAuthUserWithEmailAndPassword = async (email: string, password: string) => {
   // if email and password doesn't exist dont call this method
   if(!email || !password) return;
 
@@ -143,7 +167,7 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 }
 
 // SIGN IN WITH EMAIL AND PASSWORD
-export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+export const signInAuthUserWithEmailAndPassword = async (email: string, password: string) => {
   // if email and password doesn't exist dont call this method
   if(!email || !password) return;
 
@@ -156,11 +180,11 @@ export const signOutUser = async () => await signOut(auth);
 // onAuthStateChanged
 // it will call as callback whenever the auth state changed
 // it will run like login logout , 
-export const onAuthStateChangedListener = async (callback) =>  onAuthStateChanged(auth, callback);
+export const onAuthStateChangedListener = async (callback: NextOrObserver<User>) =>  onAuthStateChanged(auth, callback);
 
 
 // check the active user that authenticated 
-export const getCurrentUser = () => {
+export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
       // onAuthStateChanged take `auth` object and callback 

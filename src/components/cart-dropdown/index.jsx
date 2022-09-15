@@ -8,7 +8,7 @@ import ButtonComponent from "../button/index";
 import CartItem from "../cart-item";
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
-import { selectCartItems } from "../../store/cart/cart.selector.js";
+import { selectCartItems } from "../../store/cart/cart.selector";
 // import { CartContext } from "../../contexts/cartContext";
 
 const CardDropdown = () => {

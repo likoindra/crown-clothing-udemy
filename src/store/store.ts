@@ -1,5 +1,5 @@
-import { compose, createStore, applyMiddleware } from "redux";
-import { persistStore, persistReducer } from 'redux-persist';
+import { compose, createStore, applyMiddleware, Middleware } from "redux";
+import { persistStore, persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import logger from "redux-logger";
 // import thunk from 'redux-thunk';
@@ -11,10 +11,27 @@ import { rootSaga } from "./root-saga";
 // root reducer
 import { rootReducer } from "./root.reducer";
 
+// ROOT STATE type 
+export type RootState = ReturnType<typeof rootReducer>;
+
+declare global {
+  interface Window {
+    // Note: ` ?: ` mean the extention can be used or not 
+    // cause it can be loaded by devtools or not 
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose
+  }
+}
+
+// Extending persist config 
+type ExtentedPersistConfig = PersistConfig<RootState> & {
+  // whitelist will only contain array of key from RootState
+  // keyof : will get only values 
+  whitelist: (keyof RootState)[]
+}
 
 // -------------------------- REDUX PERSIST CONFIG --------------------
 
-const persistConfig = {
+const persistConfig: ExtentedPersistConfig = {
   key: 'root',
   // using local storage to save what we want to save 
   storage,
@@ -23,7 +40,7 @@ const persistConfig = {
   // blacklist : ['user']
 
   // only the main thing that want to persist , using whitelist 
-  // only `cart reducer`, because after addign some products to cart , 
+  // only `cart reducer`, because after adding some products to cart , 
   // and when want to checkout , we still have the current value even after refreshing
   whitelist: ['cart']
 }
@@ -46,7 +63,7 @@ const composeEnhancer = (process.env.NODE_ENV !== 'production' && window && wind
 
 // -------------------------- REDUX DEVTOOLS CONFIG --------------------
 
-const middlewares = [process.env.NODE_ENV === 'development' && logger, sagaMiddleware].filter(Boolean);
+const middlewares = [process.env.NODE_ENV === 'development' && logger, sagaMiddleware].filter((middleware):middleware is Middleware => Boolean(middleware));
 
 const composedEnhancers = composeEnhancer(applyMiddleware(...middlewares));
 
