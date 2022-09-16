@@ -1,7 +1,13 @@
-import React from "react";
-import {BackgroundImage, DirectoryItemContainer, Body} from "./directory-item.styles.jsx";
+import React, { FC } from "react";
+import {BackgroundImage, DirectoryItemContainer, Body} from "./directory-item.styles";
 import { useNavigate } from 'react-router-dom';
-const DirectoryItem = ({ category }) => {
+import { DirectoryCategory } from '../directory/'
+
+type DirectoryItemProps = {
+  category: DirectoryCategory;
+}
+
+const DirectoryItem: FC<DirectoryItemProps> = ({ category }) => {
 const { imageUrl, title, route } = category;
 const navigate = useNavigate();
 const onNavigateHandler = () => navigate(route);
@@ -13,7 +19,7 @@ const onNavigateHandler = () => navigate(route);
       <BackgroundImage
         // passing the image props for using at the styling 
         imageUrl={imageUrl} 
-        loading="lazy"    
+        // loading="lazy"    
         // style={{ backgroundImage: `url(${imageUrl})` }}
       />
       <Body>

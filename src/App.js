@@ -18,7 +18,6 @@ const App = () => {
     // function redux-saga untuk mengecek apakah user ada atau tidak
     // user sudah register/login atau tidak
     dispatch(checkUserSession());
-
     // dalam function getCurrentUser berisi promise 
     // getCurrentUser();
 
@@ -34,7 +33,7 @@ const App = () => {
     // fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  
   return (
     <Routes>
       <Route path="/" element={<Navigation />}>

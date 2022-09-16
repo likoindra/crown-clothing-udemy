@@ -3,7 +3,7 @@ import {
   CartDropdownContainer,
   EmptyMessage,
   CartItems,
-} from "./cart-dropdown.styles.jsx";
+} from "./cart-dropdown.styles";
 import ButtonComponent from "../button/index";
 import CartItem from "../cart-item";
 import { useNavigate } from "react-router";

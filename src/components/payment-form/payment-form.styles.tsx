@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ButtonComponent from "../button";
+
 export const PaymentFormContainer = styled.div`
   height: 30px;
   display: flex;

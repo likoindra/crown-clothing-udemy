@@ -1,18 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./cart-icon.styles.jsx";
-import {
-  ShoppingIcon,
-  CartItemContainer,
-  ItemCount,
-} from "./cart-icon.styles.jsx";
+import { CartItemContainer, ItemCount } from "./cart-icon.styles";
 // import { CartContext } from "../../contexts/cartContext";
-import {
-  selectCartCount,
-  selectIsCartOpen,
-} from "../../store/cart/cart.selector";
+import { selectCartCount, selectIsCartOpen } from "../../store/cart/cart.selector";
 import { setIsCartOpen } from "../../store/cart/cart.action";
-// import { ReactComponent as ShoppingIcon } from "../../assets/svg/shopping-bag.svg";
+import { ReactComponent as ShoppingIcon } from "../../assets/svg/shopping-bag.svg";
 
 const CartIcon = () => {
   // memanggil value dari CartContext

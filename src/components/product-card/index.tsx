@@ -1,12 +1,17 @@
-import React from "react";
+import { FC } from "react";
 import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import { ProductCartContainer, Footer, Name, Price } from  './product-card.styles'
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../store/cart/cart.action";
 import { selectCartItems } from "../../store/cart/cart.selector";
+import { CategoryItem } from "../../store/categories/category.types";
 // import { CartContext } from "../../contexts/cartContext";
 
-const ProductCard = ({ product }) => {
+export type ProductCardProps = {
+  product: CategoryItem;
+}
+
+const ProductCard: FC<ProductCardProps> = ({ product }) => {
   const dispatch = useDispatch();
   // de-structure key dari product, pilih mana yang di butuhkan untuk ditampilkan pada component ini
   const { name, price, imageUrl } = product;

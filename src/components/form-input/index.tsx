@@ -1,7 +1,10 @@
-import React from "react";
-import { FormInputLabel, Input, Group } from "./form-input.styles.jsx";
+import { InputHTMLAttributes, FC} from "react";
+import { FormInputLabel, Input, Group } from "./form-input.styles";
 
-export default function FormInputComponent({ label, ...otherProps }) {
+// FormInputProps type 
+export type FormInputProps = { label: string } & InputHTMLAttributes<HTMLInputElement>
+
+const FormInputComponent: FC<FormInputProps> = ({ label, ...otherProps }) => {
   return (
     <Group>
       {/* make the input label above the label to make the function from scss works  */}
@@ -10,8 +13,10 @@ export default function FormInputComponent({ label, ...otherProps }) {
       {/* if label exist it will render the existing label  */}
       {label && (
         <FormInputLabel
-        // pass the shrink function to use in styling 
-          shrink={otherProps.value.length}
+          // pass the shrink function to use in styling 
+
+          // Define otherProps as Boolean
+          shrink={Boolean(otherProps.value && typeof otherProps.value === 'string' && otherProps.value.length)}
           // className={`${
           //   otherProps.value.length ? "shrink" : ""
           // } form-input-label`}
@@ -23,3 +28,5 @@ export default function FormInputComponent({ label, ...otherProps }) {
     </Group>
   );
 }
+
+export default FormInputComponent;

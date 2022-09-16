@@ -1,9 +1,9 @@
- import React, { useState } from "react";
+ import { useState, FormEvent, ChangeEvent } from "react";
 // eslint-disable-next-line no-unused-vars
 // import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase-utils";
 import ButtonComponent, { BUTTON_TYPE_CLASSES } from "../button";
 import FormInputComponent from "../form-input";
-import {SignInContainer , ButtonContainer} from "./sign-in-form.styles.jsx";
+import {SignInContainer , ButtonContainer} from "./sign-in-form.styles";
 import { useDispatch } from 'react-redux';
 import { googleSignInStart,emailSignInStart } from "../../store/user/user.action";
 import { useNavigate } from "react-router";
@@ -38,17 +38,15 @@ export default function SignInForm() {
 
     // called to check the preferences user object after login
     // const userDocRef = await createUserDocumentFromAuth(user);
+    // navigate('/')
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value  }  = event.target;
-    setFormFields({
-        ...formFields,
-        [name] : value
-    })
+    setFormFields({...formFields,[name] : value})
   } 
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); 
     try {
          dispatch(emailSignInStart(email, password))
@@ -60,32 +58,33 @@ export default function SignInForm() {
 
         // console.log(user, 'cek res')
         resetFormFields();
-        navigate('/');
+        // navigate('/');
     } catch (error) {
-        switch(error.code) {
-        case 'auth/wrong-password':
-            alert('Incorrect password for email');
-        break;
-        case 'auth/user-not-found':
-            alert('no use asociated with this email')
-        break;
-        default: 
-        console.log(error);
-        }
+        console.log('user sign in failed', error)
+        // switch(error.code) {
+        // case 'auth/wrong-password':
+        //   alert('Incorrect password or email');
+        // break;
+        // case 'auth/user-not-found':
+        //   alert('no use asociated with this email')
+        // break;
+        // default: 
+        // console.log(error);
+        // }
         // if(error.code === 'auth/user-not-found') {
         //     alert('Incorrect password for email')
         // } else if () {
 
         // }
         // indicate the error from login with email and password
-        console.log(error )
+        // console.log(error);
     }
   }
   return (
     <SignInContainer>
       <h2>Already have an account ? </h2>
       <span>Sign in with your email and password</span>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit}>
         <FormInputComponent label="Email" type="email" required name="email" value={ email } onChange={ handleChange }/>
         <FormInputComponent label="Password" type="password" required name="password" value={ password } onChange={ handleChange }/>
         <ButtonContainer>

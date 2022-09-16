@@ -1,14 +1,17 @@
+import { FormEvent, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { StripeCardElement } from "@stripe/stripe-js";
 import { selectCartTotal } from "../../store/cart/cart.selector";
 import { BUTTON_TYPE_CLASSES } from "../button/";
-import {
-  FormContainer,
-  PaymentFormContainer,
-  PaymentButton,
-} from "./payment-form.styles";
+import { FormContainer, PaymentFormContainer,PaymentButton } from "./payment-form.styles";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
-import { useState } from "react";
+
+
+// typeguard using tyepscript
+// if it true it will make the card as `StripeCardElement` 
+// if card not equal to null that must be `StripeCardElement`
+const ifValidCardElement = (card: StripeCardElement | null): card is StripeCardElement => card !== null;
 
 const PaymentForm = () => {
   // hooks from react-stripe-js
@@ -24,11 +27,10 @@ const PaymentForm = () => {
   // take the current user
   const currentUser = useSelector(selectCurrentUser);
 
-  console.log(currentUser, 'current user')
 
   // payment handler submit function
   // make it async await because need to recieve data from stripe
-  const paymentHandler = async (e) => {
+  const paymentHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // check the stripe instance
@@ -60,11 +62,21 @@ const PaymentForm = () => {
 
     // console.log(client_secret)
 
+    // PaymentResult type 
+    const cardDetails = elements.getElement(CardElement);
+
+    // check if cardDetails present or not 
+    // if cardDetails null , dont continue the proccess
+    // if(cardDetails === null) return;
+
+    // second type of using `ifValidCardComponent` typeguard from typescript 
+    if(!ifValidCardElement(cardDetails)) return;
+
     // make the actual payment
     // need client_secret to grant access to payment
     const paymentResult = await stripe.confirmCardPayment(client_secret, {
       payment_method: {
-        card: elements.getElement(CardElement),
+        card: cardDetails,
         billing_details: {
           name: currentUser ? currentUser?.displayName : "Guest",
         },

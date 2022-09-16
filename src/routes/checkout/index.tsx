@@ -1,11 +1,10 @@
 import React from "react";
-import "./checkout.styles.jsx";
 // import { CartContext } from "../../contexts/cartContext";
 import { useSelector } from 'react-redux';
 import CheckoutItem from "../../components/checkout-item";
 import { selectCartItems, selectCartTotal } from "../../store/cart/cart.selector";
-import { CheckoutContainer, CheckoutHeader, HeaderBlock, Total } from "./checkout.styles.jsx";
-import PaymentForm from "../../components/payment-form/index.jsx";
+import { CheckoutContainer, CheckoutHeader, HeaderBlock, Total } from "./checkout.styles";
+import PaymentForm from "../../components/payment-form";
 
 const Checkout = () => {
   // memanggil value dari cartContext

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import CartIcon from "../../components/cart-icon";
 import CardDropdown from "../../components/cart-dropdown";
@@ -11,12 +11,7 @@ import { useNavigate } from "react-router";
 // import { useNavigate } from "react-router";
 // import { UserContext } from "../../contexts/userContext";
 // import { CartContext } from "../../contexts/cartContext";
-import {
-  NavigationContainer,
-  LogoContainer,
-  NavLinks,
-  NavLink,
-} from "./navigation.styles";
+import { NavigationContainer, LogoContainer, NavLinks, NavLink } from "./navigation.styles";
 import { signOutStart } from "../../store/user/user.action";
 
 const Navigation = () => {
@@ -25,6 +20,14 @@ const Navigation = () => {
   const currentUser = useSelector(selectCurrentUser);
 
   const isCartOpen = useSelector(selectIsCartOpen);
+
+  // useEffect(() => {
+  //   if(currentUser) {
+  //     navigate('/')
+  //   } else {
+  //     navigate('/auth')
+  //   }
+  // },[])
 
   // change the method of calling function from firebase.utils to user.action using redux saga 
   // const signOutUser = () => dispatch(signOutStart())

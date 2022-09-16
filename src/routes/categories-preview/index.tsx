@@ -5,10 +5,7 @@ import { useSelector } from "react-redux";
 // import { CategoriesContext } from "../../contexts/categoriesContext";
 import CategoryPreview from "../../components/category-preview";
 import Spinner from "../../components/spinner";
-import {
-  selectCategoriesIsLoading,
-  selectCategoriesMap,
-} from "../../store/categories/category.selector";
+import { selectCategoriesIsLoading, selectCategoriesMap } from "../../store/categories/category.selector";
 // 26 Juni
 // Mengganti render SHOP_DATA menggunakan data dari ProdcutsContext dari useContext
 

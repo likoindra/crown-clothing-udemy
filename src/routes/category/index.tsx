@@ -1,18 +1,21 @@
 import React, { Fragment, useEffect, useState } from "react";
 // import { CategoriesContext } from "../../contexts/categoriesContext";
-import "./category.styles.jsx";
 import { useParams } from "react-router";
 import ProductCard from "../../components/product-card";
 import { useSelector } from "react-redux";
-import {
-  selectCategoriesIsLoading,
-  selectCategoriesMap,
-} from "../../store/categories/category.selector";
-import { CategoryContainer, Title } from "./category.styles.jsx";
-import Spinner from "../../components/spinner/index.jsx";
+import { selectCategoriesIsLoading, selectCategoriesMap } from "../../store/categories/category.selector";
+import { CategoryContainer, Title } from "./category.styles";
+import Spinner from "../../components/spinner";
+
+// Expecting typescript to return a value while using useParams();
+type CategoryRouteParams = {
+  category : string;
+}
 
 const Category = () => {
-  const { category } = useParams();
+  // tell typescript to return just only the key from `CategoryRouteParams` 
+  // making it as `CategoryRouteParams`, to make `category` always presents 
+  const { category } = useParams<keyof CategoryRouteParams>() as CategoryRouteParams;
   // const { categoriesMap } = useContext(CategoriesContext);
   // console.log("render/rerendering category component");
   const categoriesMap = useSelector(selectCategoriesMap);
