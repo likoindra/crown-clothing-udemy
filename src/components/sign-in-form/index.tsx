@@ -84,7 +84,7 @@ export default function SignInForm() {
     <SignInContainer>
       <h2>Already have an account ? </h2>
       <span>Sign in with your email and password</span>
-      <form onSubmit={(e) => handleSubmit}>
+      <form onSubmit={ handleSubmit }>
         <FormInputComponent label="Email" type="email" required name="email" value={ email } onChange={ handleChange }/>
         <FormInputComponent label="Password" type="password" required name="password" value={ password } onChange={ handleChange }/>
         <ButtonContainer>

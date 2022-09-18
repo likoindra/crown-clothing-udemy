@@ -36,7 +36,7 @@ export default function SignUpForm() {
     })
   } 
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement> ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // checking the password and confim password 
     if(password !== confirmPassword) {
@@ -71,7 +71,7 @@ export default function SignUpForm() {
     <SignUpContainer>
       <h2>Don't have an account ? </h2>
       <span>Sign up with your email and password</span>
-      <form onSubmit={(e) => handleSubmit}>
+      <form onSubmit={ handleSubmit }>
         <FormInputComponent label="Display Name" type="text" required name="displayName" value={ displayName } onChange={ handleChange }/>
         <FormInputComponent label="Email" type="email" required name="email" value={ email } onChange={ handleChange }/>
         <FormInputComponent label="Password" type="password" required name="password" value={ password } onChange={ handleChange }/>

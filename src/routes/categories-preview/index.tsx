@@ -7,7 +7,7 @@ import CategoryPreview from "../../components/category-preview";
 import Spinner from "../../components/spinner";
 import { selectCategoriesIsLoading, selectCategoriesMap } from "../../store/categories/category.selector";
 // 26 Juni
-// Mengganti render SHOP_DATA menggunakan data dari ProdcutsContext dari useContext
+// Mengganti render SHOP_DATA menggunakan data dari ProductsContext dari useContext
 
 const CategoriesPreview = () => {
   // const { categoriesMap } = useContext(CategoriesContext);
